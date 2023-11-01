@@ -4,17 +4,17 @@ USE MusicCompDB;
 -- Drop the temporary table
 DROP TEMPORARY TABLE IF EXISTS MusicCompDB.temp_votes;
 
--- Extract data from the source VOTES table
+-- Extract data from the source VOTES table to temporary staging table
 CREATE TEMPORARY TABLE temp_votes AS
 SELECT *
 FROM VOTES;
 
--- Transform data as needed (you might need to join tables, aggregate, etc.)
--- Example transformation: Create a new column for total votes
+-- Transform staging table by adding AGE_GROUPID and COUNTYID columns
 ALTER TABLE temp_votes
 ADD COLUMN AGE_GROUPID INT, 
 ADD COLUMN COUNTYID INT;
 
+-- Update the staging table with the correct values for the new columns using subqueries
 UPDATE temp_votes
 SET AGE_GROUPID = (SELECT AGE_GROUP FROM VIEWERS WHERE VIEWERS.VIEWERID = temp_votes.VIEWERID),
 COUNTYID = (SELECT COUNTYID FROM VIEWERS WHERE VIEWERS.VIEWERID = temp_votes.VIEWERID);
