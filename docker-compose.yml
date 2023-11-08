@@ -24,3 +24,17 @@ services:
       - UPLOAD_LIMIT=2048M
       - MEMORY_LIMIT=2048M
   
+  couchdb:
+    image: docker.io/bitnami/couchdb:3
+    environment:
+      - COUCHDB_USER=admin
+      - COUCHDB_PASSWORD=couchdb
+    ports:
+      - '5984:5984'
+
+    volumes:
+      - couchdb_data:/bitnami/couchdb
+volumes:
+  couchdb_data:
+    driver: local
+  
