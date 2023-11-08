@@ -6,6 +6,9 @@ db_name = "music_comp_db"
 db = couch[db_name]
 
 # Mango query to return all documents from the votes_fact collection where the votemode is Instagram and the edition is 2022
+print("Returning vote counts for each age group who voted on Instagram in 2022")
+
+# 18-24 age group query
 query_18_24 = {
     "selector": {
         "type": "votes_fact",
@@ -15,7 +18,6 @@ query_18_24 = {
     },
     "limit": 1000
 }
-print("Returning vote counts for each age group who voted on Instagram in 2022")
 result_18_24 = db.find(query_18_24)
 count_18_24 = 0
 for row in result_18_24:
@@ -23,6 +25,7 @@ for row in result_18_24:
 
 print("18-24 Age Group:", count_18_24)
 
+# 25-30 age group query
 query_25_30 = {
     "selector": {
         "type": "votes_fact",
@@ -39,6 +42,7 @@ for row in result_25_30:
 
 print("25-30 Age Group:", count_25_30)
 
+# 31-49 age group query
 query_31_49 = {
     "selector": {
         "type": "votes_fact",
@@ -55,6 +59,7 @@ for row in result_31_49:
 
 print("31-49 Age Group:", count_31_49)
 
+# 50+ age group query
 query_gt50 = {
     "selector": {
         "type": "votes_fact",
