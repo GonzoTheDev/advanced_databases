@@ -1,4 +1,4 @@
--- Connect to the destination MariaDB database
+-- Connect to the destination MariaDB database 
 -- USE MusicCompDB_DIM;
 
 -- Question 1

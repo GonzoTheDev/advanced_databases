@@ -1,4 +1,4 @@
--- Connect to the source MariaDB database
+-- Connect to the source MariaDB database 
 USE MusicCompDB;
 
 -- Drop the temporary table

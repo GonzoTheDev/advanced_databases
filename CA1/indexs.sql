@@ -1,4 +1,4 @@
--- Question 1
+-- Question 1 
 -- Index on V.AGE_GROUPID
 -- This index will speed up the join operation between VOTES_FACT and AGEGROUP_DIM on the AGE_GROUPID column
 CREATE INDEX idx_age_groupid ON VOTES_FACT (AGE_GROUPID);
