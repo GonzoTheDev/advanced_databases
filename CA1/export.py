@@ -1,11 +1,17 @@
 import mariadb
 import couchdb
-import uuid
 from datetime import datetime
+import json
+import decimal
+
+class Encoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal): return float(obj)
+
 
 # Set up the connection to CouchDB
 couch = couchdb.Server("http://admin:couchdb@127.0.0.1:5984")  
-db_name = "music_comp_db"  # Replace with your desired CouchDB database name
+db_name = "music_comp_db"  
 
 if db_name in couch:
     couch.delete(db_name)  # Delete the database if it already exists
@@ -20,7 +26,7 @@ except couchdb.PreconditionFailed as e:
     else:
         raise
 
-# Connect to your MariaDB relational database
+# Connect to MariaDB relational database
 db_config = {
     "host": "127.0.0.1",
     "user": "root",
@@ -42,7 +48,7 @@ design_doc = {
             "map": "function (doc) { if (doc.type === 'viewers_dim') { emit(doc._id, doc.age_groupid, doc.viewerid); }}"
         },
         "by_county": {
-            "map": "function (doc) { if (doc.type === 'county_dim') { emit(doc._id, doc.countyid, doc.countyname); }}"
+            "map": "function (doc) { if (doc.type === 'county_dim') { emit(doc._id, doc.countyname); }}"
         },
         "by_edition": {
             "map": "function (doc) { if (doc.type === 'edition_dim') { emit(doc._id, doc.edyear, doc.edpresenter); }}"
@@ -63,7 +69,8 @@ try:
 except couchdb.ResourceConflict:
     print("Design document already exists.")
 
-    
+
+# Helper function to retrieve a document ID by key
 def get_document_id_by_key(db, key, type, view):
     search_key = type + "_" + str(key)
     view_result = db.view('views/' + view, key=search_key)
@@ -73,12 +80,13 @@ def get_document_id_by_key(db, key, type, view):
     else:
         return None
 
-def get_countyname(db, key, type, view):
-    search_key = type + "_" + str(key)
-    view_result = db.view('views/' + view, key=search_key)
+# Helper function to retrieve a county name by county ID
+def get_countyname(db, countyid):
+    search_key = "county_dim_" + str(countyid)
+    view_result = db.view('views/by_county', key=search_key)
     
     if view_result:
-        return view_result.rows[0].countyname
+        return view_result.rows[0].value
     else:
         return None
 
@@ -94,9 +102,8 @@ for table in tables:
 
     # Insert data into CouchDB
     for row in rows:
-        # Build CouchDB document structure with a timestamp to ensure uniqueness
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
         
+        # Get rows and store in variables
         viewer_id = row.get('VIEWERID', '')
         age_group_id = row.get('AGE_GROUPID', '')
         age_group_desc = row.get('AGE_GROUP_DESC', '')
@@ -112,6 +119,7 @@ for table in tables:
         vote = row.get('VOTE', '')
         vote_id = row.get('VOTE_ID', '')
 
+        # Define the document ID variales
         viewer_document_id = f"viewers_dim_{viewer_id}"
         age_group_document_id = f"agegroup_dim_{age_group_id}"
         county_document_id = f"county_dim_{county_id}"
@@ -120,6 +128,7 @@ for table in tables:
         edition_document_id = f"edition_dim_{ed_year}_{ed_presenter}"
         votes_fact_document_id = f"votes_fact_{vote_id}"
         
+        # Define the document ID and types
         if table == 'AGEGROUP_DIM':
             document = {"_id": age_group_document_id, "type": table.lower()}
         if table == 'COUNTY_DIM':
@@ -164,7 +173,7 @@ for table in tables:
                 "partname": participant_name,
                 "countyid": county_id
             })
-            pt_countyname_document_id = get_countyname(db, county_id, 'county_dim', 'by_viewer')
+            pt_countyname_document_id = get_countyname(db, county_id)
             if(pt_countyname_document_id):
                 document['countyname'] = pt_countyname_document_id
             print(f"Exporting {table} document with ID {participant_document_id}")
@@ -184,6 +193,7 @@ for table in tables:
                 })
                 print(f"Exporting {table} document with ID {viewer_category_document_id}")
         elif table == 'VOTES_FACT':
+            vote_cost = json.dumps(row['VOTE_COST'],  cls=Encoder)
             document.update({
                 "_id": votes_fact_document_id,
                 "vote_id": row['VOTE_ID'],
@@ -192,9 +202,11 @@ for table in tables:
                 "participant": {"partname": participant_name, "countyid": county_id},
                 "vote_category": {"catid": vote_category_id},
                 "votemode": vote_mode,
-                "vote": vote
+                "vote": vote,
+                "vote_cost": vote_cost
             })
 
+            # Get the document IDs for the nested documents
             vf_viewer_document_id = get_document_id_by_key(db, viewer_id, 'viewers_dim', 'by_viewer')
             if(vf_viewer_document_id):
                 document['viewer']['_id'] = vf_viewer_document_id
