@@ -1,5 +1,6 @@
 # Advanced Databases CA 1 - Overview
-This repository contains 7 files, here is a description of what each file does and the order they should be executed. 
+
+This repository contains 7 files (plus this readme), here is a description of what each file does and the order they should be executed. 
 
 1. create_database.sql - This file creates the new dimensional database (MusicCompDB_DIM) and defines its structure/entities/relationships.
 2. etl.sql - This file collects the data from the initially provided database (MusicCompDB), then converts the data to fit the new dimensional database, including a staging phase in which the votes table is denormalised and coverted to a fact table called votes_fact.
