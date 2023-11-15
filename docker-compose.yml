@@ -25,7 +25,7 @@ services:
       - MEMORY_LIMIT=2048M
   
   couchdb:
-    image: docker.io/bitnami/couchdb:3
+    image: docker.io/drgonzo19929/couchdb_sbw
     environment:
       - COUCHDB_USER=admin
       - COUCHDB_PASSWORD=couchdb
@@ -33,7 +33,7 @@ services:
       - '5984:5984'
 
     volumes:
-      - couchdb_data:/bitnami/couchdb
+      - couchdb_data:/drgonzo19929/couchdb_sbw
 volumes:
   couchdb_data:
     driver: local

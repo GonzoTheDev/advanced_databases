@@ -6,7 +6,7 @@ db_name = "music_comp_db"
 db = couch[db_name]
 
 # Mango query to return all documents from the votes_fact collection where the votemode is Instagram and the edition is 2022
-print("Returning vote counts for each age group who voted on Instagram in 2022")
+print("Returning vote counts for each age group who voted on Instagram in 2013")
 
 # 18-24 age group query
 query_18_24 = {
@@ -14,7 +14,7 @@ query_18_24 = {
         "type": "votes_fact",
         "viewer": {"age_groupid": 1},
         "votemode": "Instagram",
-        "edition": {"edyear": 2022}
+        "edition": {"edyear": 2013}
     },
     "limit": 1000
 }
@@ -31,7 +31,7 @@ query_25_30 = {
         "type": "votes_fact",
         "viewer": {"age_groupid": 2},
         "votemode": "Instagram",
-        "edition": {"edyear": 2022}
+        "edition": {"edyear": 2013}
     },
     "limit": 1000
 }
@@ -48,7 +48,7 @@ query_31_49 = {
         "type": "votes_fact",
         "viewer": {"age_groupid": 3},
         "votemode": "Instagram",
-        "edition": {"edyear": 2022}
+        "edition": {"edyear": 2013}
     },
     "limit": 1000
 }
@@ -65,7 +65,7 @@ query_gt50 = {
         "type": "votes_fact",
         "viewer": {"age_groupid": 4},
         "votemode": "Instagram",
-        "edition": {"edyear": 2022}
+        "edition": {"edyear": 2013}
     },
     "limit": 1000
 }

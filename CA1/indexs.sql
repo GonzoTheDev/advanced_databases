@@ -1,3 +1,4 @@
+USE MusicCompDB_DIM;
 -- Question 1 
 -- Index on V.AGE_GROUPID
 -- This index will speed up the join operation between VOTES_FACT and AGEGROUP_DIM on the AGE_GROUPID column
