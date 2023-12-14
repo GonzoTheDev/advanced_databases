@@ -1,0 +1,9 @@
+{
+    "_id": "_design/partition_query",
+    "_rev": "1-481855f7c04e882c56fe1ddb5fab36a6",
+    "views": {
+      "my_view": {
+        "map": "\n                    function(doc) {\n                        if(doc.votes) {\n                            emit(doc._id, doc.votes);\n                        }\n                    }\n                "
+      }
+    }
+  }

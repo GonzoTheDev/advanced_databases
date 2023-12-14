@@ -1,0 +1,13 @@
+{
+    "_id": "_design/votes_by_age_group_and_county",
+    "_rev": "1-0e6796b12329cb3f73679ede3757bb59",
+    "options": {
+      "partitioned": false
+    },
+    "views": {
+      "votes_by_age_group_and_county": {
+        "map": "\n                function (doc) {\n                    if (doc._id.startsWith('kerry:')) {\n                        var county = doc._id.split(':')[1];  // Extract the county from the _id\n                        var votes = doc.votes;\n\n                        for (var i = 0; i < votes.length; i++) {\n                            var vote = votes[i];\n                            var ageGroup = vote.age_group;  \n\n                            // Emit the vote count for each age group and county\n                            emit({ ageGroup: ageGroup, county: county }, { count: votes.vote });  \n                        }\n                    }\n                }",
+        "reduce": "\n                function (keys, values) {\n                    var totalCount = 0;\n\n                    for (var i = 0; i < values.length; i++) {\n                        totalCount += values[i].count;\n                    }\n\n                    return { count: totalCount };\n                }"
+      }
+    }
+  }
