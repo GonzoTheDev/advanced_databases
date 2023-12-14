@@ -1,0 +1,27 @@
+{
+    "_id": "replication_doc",
+    "_rev": "7-0dffe9058141397e33a6fd2c13d192e7",
+    "user_ctx": {
+      "name": "admin",
+      "roles": [
+        "_admin",
+        "_reader",
+        "_writer"
+      ]
+    },
+    "source": {
+      "url": "http://127.0.0.1:5984/c20703429_musiccompdb",
+      "headers": {
+        "Authorization": "Basic YWRtaW46Y291Y2hkYg=="
+      }
+    },
+    "target": {
+      "url": "http://127.0.0.1:5984/c20703429_musiccompdb_replica",
+      "headers": {
+        "Authorization": "Basic YWRtaW46Y291Y2hkYg=="
+      }
+    },
+    "create_target": false,
+    "continuous": true,
+    "owner": "admin"
+  }
