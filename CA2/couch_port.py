@@ -10,11 +10,11 @@ couch = couchdb.Server("http://admin:couchdb@127.0.0.1:5984")
 db_name = "c20703429_musiccompdb"  
 
 # Options flags
-port_data = False
+port_data = True
 save_to_json = False
-create_global_query = True
+create_global_query = False
 execute_global_query = False
-create_partition_query = True
+create_partition_query = False
 
 if db_name in couch:
 
